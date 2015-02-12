@@ -5,6 +5,8 @@ namespace CheapLevel
 {
     internal class Level : IDisposable
     {
+        private string _header;
+
         private Level(string filePath)
         {
             FilePath = filePath ?? string.Empty;
@@ -45,8 +47,72 @@ namespace CheapLevel
 
         private void Load(byte[] bytes, int pos)
         {
-            Bytes stream = new Bytes(bytes);
-            stream.Position = pos;
+            Bytes stream = new Bytes(bytes, pos);
+            stream.Position = stream.LoadInt() + pos;
+
+            int posHeader = stream.LoadInt() + pos;
+            int posFooter = stream.LoadInt() + pos;
+            int posStats = stream.LoadInt() + pos;
+            int posStyle = stream.LoadInt() + pos;
+            int posTools = stream.LoadInt() + pos;
+            int posSmallMap = stream.LoadInt() + pos;
+            int posObjects = stream.LoadInt() + pos;
+            int posImage = stream.LoadInt() + pos;
+
+            LoadHeader(bytes, posHeader);
+            LoadStats(bytes, posFooter);
+            LoadStyle(bytes, posStyle);
+            LoadTools(bytes, posTools);
+            LoadSmallMap(bytes, posSmallMap);
+            LoadObjects(bytes, posObjects);
+            LoadImage(bytes, posImage);
+        }
+
+        private void LoadHeader(byte[] bytes, int pos)
+        {
+            Bytes stream = new Bytes(bytes, pos);
+
+            if (stream.LoadByteAsInt() != 1)
+            {
+                throw new Exception("Invalid level header format");
+            }
+
+            _header = stream.LoadString();
+
+            if (_header != "Cheapo Copycat Level Editor")
+            {
+                throw new Exception("Invalid level header");
+            }
+        }
+
+        private void LoadStats(byte[] bytes, int pos)
+        {
+            Bytes stream = new Bytes(bytes, pos);
+        }
+
+        private void LoadStyle(byte[] bytes, int pos)
+        {
+            Bytes stream = new Bytes(bytes, pos);
+        }
+
+        private void LoadTools(byte[] bytes, int pos)
+        {
+            Bytes stream = new Bytes(bytes, pos);
+        }
+
+        private void LoadSmallMap(byte[] bytes, int pos)
+        {
+            Bytes stream = new Bytes(bytes, pos);
+        }
+
+        private void LoadObjects(byte[] bytes, int pos)
+        {
+            Bytes stream = new Bytes(bytes, pos);
+        }
+
+        private void LoadImage(byte[] bytes, int pos)
+        {
+            Bytes stream = new Bytes(bytes, pos);
         }
 
         public void Save(string dest, int index)

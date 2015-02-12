@@ -132,7 +132,7 @@ namespace CheapLevel
                 {
                     using (CheapLevel.Level level = CheapLevel.Level.Create(file))
                     {
-                        level.Save(dest);
+                        level.Save(dest, 0);
                     }
                 }
             }
