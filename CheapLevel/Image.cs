@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace CheapLevel
 {
-    /// <summary>
-    /// An image loaded from a style file
-    /// </summary>
     internal class Image : IDisposable
     {
         private int _width;
@@ -18,19 +13,9 @@ namespace CheapLevel
         private ushort _bgColor;
         private ushort[] _pixels;
         private WriteableBitmap _bitmap;
-        private string _name;
 
         private Image(Bytes stream)
         {
-            _name = string.Empty;
-
-            Load(stream);
-        }
-
-        private Image(Bytes stream, int index)
-        {
-            _name = string.Format("Other{0}", index);
-
             Load(stream);
         }
 
@@ -39,14 +24,9 @@ namespace CheapLevel
             CopyFrom(null);
         }
 
-        public static Image CreateStandard(Bytes stream)
+        public static Image Create(Bytes stream)
         {
             return new Image(stream);
-        }
-
-        public static Image CreateOther(Bytes stream, int index)
-        {
-            return new Image(stream, index);
         }
 
         private void Load(Bytes stream)
@@ -143,14 +123,6 @@ namespace CheapLevel
                 _height = image._height;
                 _pixels = image._pixels;
                 _bitmap = image._bitmap;
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return _name;
             }
         }
 

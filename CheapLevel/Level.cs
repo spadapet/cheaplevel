@@ -17,9 +17,12 @@ namespace CheapLevel
         private int _viewX;
         private int _viewY;
         private int _music;
+        private int[] _tools;
         private string _intro;
         private string[] _hints;
         private string _style;
+        private Image _smallMap;
+        private Image _fullMap;
 
         private Level(string filePath)
         {
@@ -41,6 +44,17 @@ namespace CheapLevel
 
         public void Dispose()
         {
+            if (_smallMap != null)
+            {
+                _smallMap.Dispose();
+                _smallMap = null;
+            }
+
+            if (_fullMap != null)
+            {
+                _fullMap.Dispose();
+                _fullMap = null;
+            }
         }
 
         public static Level Create(string file)
@@ -140,11 +154,33 @@ namespace CheapLevel
         private void LoadTools(byte[] bytes, int pos)
         {
             Bytes stream = new Bytes(bytes, pos);
+
+            if (stream.LoadByteAsInt() != 1)
+            {
+                throw new Exception("Invalid level tools format");
+            }
+
+            _tools = new int[8];
+
+            int count = stream.LoadByteAsInt();
+            for (int i = 0; i < count; i++)
+            {
+                int index = stream.LoadByteAsInt();
+                int toolCount = stream.LoadByteAsInt();
+                _tools[index] = toolCount;
+            }
         }
 
         private void LoadSmallMap(byte[] bytes, int pos)
         {
             Bytes stream = new Bytes(bytes, pos);
+
+            if (stream.LoadByteAsInt() != 1)
+            {
+                throw new Exception("Invalid level small map format");
+            }
+
+            _smallMap = Image.Create(stream);
         }
 
         private void LoadObjects(byte[] bytes, int pos)
@@ -155,10 +191,34 @@ namespace CheapLevel
         private void LoadImage(byte[] bytes, int pos)
         {
             Bytes stream = new Bytes(bytes, pos);
+
+            if (stream.LoadByteAsInt() != 1)
+            {
+                throw new Exception("Invalid level map format");
+            }
+
+            _fullMap = Image.Create(stream);
         }
 
         public void Save(string dest, int index)
         {
+            string smallFormat = index != 0
+                ? "level-{0}-small.png"
+                : "level-small.png";
+
+            string fullFormat = index != 0
+                ? "level-{0}.png"
+                : "level.png";
+
+            if (_smallMap != null)
+            {
+                _smallMap.SavePng(System.IO.Path.Combine(dest, string.Format(smallFormat, index)));
+            }
+
+            if (_fullMap != null)
+            {
+                _fullMap.SavePng(System.IO.Path.Combine(dest, string.Format(fullFormat, index)));
+            }
         }
     }
 }
