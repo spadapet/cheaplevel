@@ -51,6 +51,8 @@
     </ApplicationDefinition>
     <Compile Include="Bytes.cs" />
     <Compile Include="Image.cs" />
+    <Compile Include="LevelBox.cs" />
+    <Compile Include="LevelObject.cs" />
     <Compile Include="LevelSet.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="zlib\Adler32.cs" />
