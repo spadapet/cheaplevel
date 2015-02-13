@@ -19,6 +19,15 @@ namespace CheapLevel
 
         public void Dispose()
         {
+            if (_levels != null)
+            {
+                foreach (Level level in _levels)
+                {
+                    level.Dispose();
+                }
+
+                _levels = null;
+            }
         }
 
         public static LevelSet Create(string file)
