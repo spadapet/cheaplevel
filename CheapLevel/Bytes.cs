@@ -82,6 +82,11 @@ namespace CheapLevel
             return LoadUshort();
         }
 
+        public int LoadColor32()
+        {
+            return LoadInt();
+        }
+
         public byte[] LoadBytes(int size)
         {
             byte[] bytes = new byte[size];
