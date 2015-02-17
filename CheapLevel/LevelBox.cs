@@ -4,7 +4,7 @@
     {
         Metal = 20,
         LeftArrows = 21,
-        RightArrow = 22,
+        RightArrows = 22,
     }
 
     internal class LevelBox
