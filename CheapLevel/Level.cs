@@ -309,7 +309,7 @@ namespace CheapLevel
                 writer.WriteLine("    <ReleaseRate>{0}</ReleaseRate>", _releaseRate);
                 writer.WriteLine("    <Minutes>{0}</Minutes>", _minutes);
                 writer.WriteLine("    <Seconds>{0}</Seconds>", _seconds);
-                writer.WriteLine("    <StartView X='{0}' Y='{0}' />", _viewX, _viewY);
+                writer.WriteLine("    <StartView X='{0}' Y='{1}' />", _viewX, _viewY);
                 writer.WriteLine("    <Music>{0}</Music>", _music);
                 writer.WriteLine("    <Tools>{0},{1},{2},{3},{4},{5},{6},{7}</Tools>", _tools[0], _tools[1], _tools[2], _tools[3], _tools[4], _tools[5], _tools[6], _tools[7]);
                 writer.WriteLine("    <Intro><![CDATA[{0}]]></Intro>", _intro);
