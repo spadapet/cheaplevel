@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace CheapLevel
 {
@@ -12,7 +14,6 @@ namespace CheapLevel
         {
             FilePath = filePath ?? string.Empty;
             Name = string.Empty;
-            Author = string.Empty;
 
             Load(System.IO.File.ReadAllBytes(filePath));
         }
@@ -39,7 +40,6 @@ namespace CheapLevel
         public string FileName { get { return System.IO.Path.GetFileName(FilePath); } }
         public string FileDir { get { return System.IO.Path.GetDirectoryName(FilePath); } }
         public string Name { get; set; }
-        public string Author { get; set; }
 
         private void Load(byte[] bytes)
         {
@@ -67,12 +67,27 @@ namespace CheapLevel
 
         public void Save(string dest)
         {
-            if (_levels != null)
+            using (FileStream stream = new FileStream(Path.Combine(dest, "set.xml"), FileMode.Create))
+            using (TextWriter writer = new StreamWriter(stream, Encoding.ASCII))
             {
-                for (int i = 0; i < _levels.Length; i++)
+                writer.WriteLine("<?xml version='1.0' ?>");
+                writer.WriteLine("<Set>");
+                writer.WriteLine("    <Name><![CDATA[{0}]]></Name>", Name);
+
+                if (_levels != null && _levels.Length > 0)
                 {
-                    _levels[i].Save(dest, i + 1);
+                    writer.WriteLine("    <LevelFiles>");
+
+                    for (int i = 0; i < _levels.Length; i++)
+                    {
+                        string file = _levels[i].Save(dest, i + 1);
+                        writer.WriteLine("        <LevelFile>{0}</LevelFile>", file);
+                    }
+
+                    writer.WriteLine("    </LevelFiles>");
                 }
+
+                writer.WriteLine("</Set>");
             }
         }
     }

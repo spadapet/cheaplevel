@@ -262,7 +262,7 @@ namespace CheapLevel
             _fullMap = Image.Create(stream);
         }
 
-        public void Save(string dest, int index)
+        public string Save(string dest, int index)
         {
             string smallFormat = index != 0
                 ? "level-{0}-small.png"
@@ -287,7 +287,7 @@ namespace CheapLevel
 
             if (_fullMap != null)
             {
-                _fullMap.SavePng(Path.Combine(dest, fullFormat));
+                _fullMap.SavePng(Path.Combine(dest, fullFile));
             }
 
             using (FileStream stream = new FileStream(Path.Combine(dest, xmlFile), FileMode.Create))
@@ -304,8 +304,8 @@ namespace CheapLevel
                 writer.WriteLine("    <BackgroundColor R='{0}' G='{1}' B='{2}' />", _bgColor & 0xFF, (_bgColor >> 8) & 0xff, (_bgColor >> 16) & 0xff);
                 writer.WriteLine("    <Width>{0}</Width>", _width);
                 writer.WriteLine("    <Height>{0}</Height>", _height);
-                writer.WriteLine("    <DimwitCount>{0}</DimwitCount>", _numLems);
-                writer.WriteLine("    <DimwitsToSave>{0}</DimwitsToSave>", _numSave);
+                writer.WriteLine("    <LemCount>{0}</LemCount>", _numLems);
+                writer.WriteLine("    <LemsToSave>{0}</LemsToSave>", _numSave);
                 writer.WriteLine("    <ReleaseRate>{0}</ReleaseRate>", _releaseRate);
                 writer.WriteLine("    <Minutes>{0}</Minutes>", _minutes);
                 writer.WriteLine("    <Seconds>{0}</Seconds>", _seconds);
@@ -313,40 +313,60 @@ namespace CheapLevel
                 writer.WriteLine("    <Music>{0}</Music>", _music);
                 writer.WriteLine("    <Tools>{0},{1},{2},{3},{4},{5},{6},{7}</Tools>", _tools[0], _tools[1], _tools[2], _tools[3], _tools[4], _tools[5], _tools[6], _tools[7]);
                 writer.WriteLine("    <Intro><![CDATA[{0}]]></Intro>", _intro);
-                writer.WriteLine("    <Hints>");
 
-                if (_hints != null)
+                if (_hints != null && _hints.Length > 0)
                 {
+                    writer.WriteLine("    <Hints>");
+
                     foreach (string hint in _hints)
                     {
                         writer.WriteLine("        <Hint><![CDATA[{0}]]></Hint>", hint);
                     }
+
+                    writer.WriteLine("    </Hints>");
                 }
 
-                writer.WriteLine("    </Hints>");
-                writer.WriteLine("    <Objects>");
-
-                if (_objects != null)
+                if (_objects != null && _objects.Count > 0)
                 {
+                    writer.WriteLine("    <Objects>");
+
                     foreach (LevelObject obj in _objects)
                     {
+                        writer.WriteLine("        <Object StyleIndex='{0}' X='{1}' Y='{2}' FlipX='{3}' FlipY='{4}' IsFake='{5}' InBack='{6}' ExtraData='{7}' />",
+                            obj.StyleIndex,
+                            obj.PosX,
+                            obj.PosY,
+                            obj.FlipX,
+                            obj.FlipY,
+                            obj.IsFake,
+                            obj.InBack,
+                            obj.Data);
                     }
+
+                    writer.WriteLine("    </Objects>");
                 }
 
-                writer.WriteLine("    </Objects>");
-                writer.WriteLine("    <Boxes>");
-
-                if (_boxes != null)
+                if (_boxes != null && _boxes.Count > 0)
                 {
+                    writer.WriteLine("    <Boxes>");
+
                     foreach (LevelBox box in _boxes)
                     {
+                        writer.WriteLine("        <Box Type='{0}' X='{1}' Y='{2}' Width='{3}' Height='{4}' />",
+                            box.Type,
+                            box.Left,
+                            box.Top,
+                            box.Width,
+                            box.Height);
                     }
-                }
 
-                writer.WriteLine("    </Boxes>");
+                    writer.WriteLine("    </Boxes>");
+                }
 
                 writer.WriteLine("</Level>");
             }
+
+            return xmlFile;
         }
     }
 }
