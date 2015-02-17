@@ -69,30 +69,7 @@ namespace CheapLevel
             string file = FileTextBox.Text;
             string dest = DestTextBox.Text;
 
-            if (!File.Exists(file))
-            {
-                MessageBox.Show(this, "File doesn't exist: " + file);
-                return;
-            }
-
-            if (!Directory.Exists(dest))
-            {
-                try
-                {
-                    DirectoryInfo info = Directory.CreateDirectory(dest);
-                    if (info == null)
-                    {
-                        throw new IOException();
-                    }
-                }
-                catch
-                {
-                    MessageBox.Show(this, "Directory can't be created: " + dest);
-                    return;
-                }
-            }
-
-            Extract(file, dest);
+            Extract(this, file, dest);
         }
 
         private void OnCancel(object sender, RoutedEventArgs args)
@@ -117,10 +94,53 @@ namespace CheapLevel
             }
         }
 
-        private void Extract(string file, string dest)
+        public static bool Extract(MainWindow window, string file, string dest)
         {
             try
             {
+                if (!File.Exists(file))
+                {
+                    string message = "File doesn't exist: " + file;
+
+                    if (window != null)
+                    {
+                        MessageBox.Show(window, message);
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine(message);
+                    }
+
+                    return false;
+                }
+
+                if (!Directory.Exists(dest))
+                {
+                    try
+                    {
+                        DirectoryInfo info = Directory.CreateDirectory(dest);
+                        if (info == null)
+                        {
+                            throw new IOException();
+                        }
+                    }
+                    catch
+                    {
+                        string message = "Directory can't be created: " + dest;
+
+                        if (window != null)
+                        {
+                            MessageBox.Show(window, message);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine(message);
+                        }
+
+                        return false;
+                    }
+                }
+
                 if (Path.GetExtension(file).Equals(".set", StringComparison.OrdinalIgnoreCase))
                 {
                     using (CheapLevel.LevelSet levelSet = CheapLevel.LevelSet.Create(file))
@@ -139,12 +159,26 @@ namespace CheapLevel
             catch (Exception exception)
             {
                 string message = string.Format("Invalid file: {0}\r\nError message: {1}", file, exception.Message);
-                MessageBox.Show(this, message);
-                return;
+
+                if (window != null)
+                {
+                    MessageBox.Show(window, message);
+                }
+                else
+                {
+                    Console.Error.WriteLine(message);
+                }
+
+                return false;
             }
 
-            Process.Start(dest);
-            Close();
+            if (window != null)
+            {
+                Process.Start(dest);
+                window.Close();
+            }
+
+            return true;
         }
     }
 }
