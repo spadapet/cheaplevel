@@ -50,7 +50,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Bytes.cs" />
-    <Compile Include="Image.cs" />
+    <Compile Include="LevelImage.cs" />
     <Compile Include="LevelBox.cs" />
     <Compile Include="LevelObject.cs" />
     <Compile Include="LevelSet.cs" />

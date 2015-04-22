@@ -6,7 +6,12 @@ using System.Windows.Media.Imaging;
 
 namespace CheapLevel
 {
-    internal class Image : IDisposable
+    /// <summary>
+    /// Either the full level map or the small map.
+    /// This loading code is pretty much the same as the style image loading code.
+    /// There just isn't anything here for referencing other styles or loading sprites.
+    /// </summary>
+    internal class LevelImage : IDisposable
     {
         private int _width;
         private int _height;
@@ -14,7 +19,7 @@ namespace CheapLevel
         private ushort[] _pixels;
         private WriteableBitmap _bitmap;
 
-        private Image(Bytes stream)
+        private LevelImage(Bytes stream)
         {
             Load(stream);
         }
@@ -24,9 +29,9 @@ namespace CheapLevel
             CopyFrom(null);
         }
 
-        public static Image Create(Bytes stream)
+        public static LevelImage Create(Bytes stream)
         {
-            return new Image(stream);
+            return new LevelImage(stream);
         }
 
         private void Load(Bytes stream)
@@ -110,7 +115,7 @@ namespace CheapLevel
             _bitmap.Freeze();
         }
 
-        private void CopyFrom(Image image)
+        private void CopyFrom(LevelImage image)
         {
             _width = 0;
             _height = 0;
